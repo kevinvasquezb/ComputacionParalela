@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Inventario - RápidoExpress</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚚 Sistema de Inventario</h1>
+            <p class="subtitle">Microservicio REST - RápidoExpress Bolivia</p>
+            <div class="server-info">
+                <span class="badge">API: 192.168.0.12:3000</span>
+                <span class="badge">DB: 192.168.0.11:5432</span>
+            </div>
+        </header>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number" id="totalProducts">0</div>
+                <div class="stat-label">Total Productos</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="totalStock">0</div>
+                <div class="stat-label">Unidades en Stock</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="totalValue">Bs. 0</div>
+                <div class="stat-label">Valor Total</div>
+            </div>
+        </div>
+
+        <div class="actions-section">
+            <button class="btn btn-primary" onclick="showAddProductForm()">
+                ➕ Agregar Producto
+            </button>
+            <button class="btn btn-secondary" onclick="loadProducts()">
+                🔄 Actualizar
+            </button>
+        </div>
+
+        <!-- Formulario para agregar producto -->
+        <div id="addProductForm" class="form-container" style="display: none;">
+            <h3>Nuevo Producto</h3>
+            <form onsubmit="createProduct(event)">
+                <input type="text" id="productName" placeholder="Nombre del producto" required>
+                <input type="text" id="productSku" placeholder="SKU (ej: PROD-001)" required>
+                <textarea id="productDesc" placeholder="Descripción" rows="3"></textarea>
+                
+                <select id="productCategory" required>
+                    <option value="">Seleccionar categoría</option>
+                    <option value="1">Electrónica</option>
+                    <option value="2">Ropa</option>
+                    <option value="3">Alimentos</option>
+                </select>
+                
+                <input type="number" id="productPrice" placeholder="Precio (Bs.)" step="0.01" required>
+                <input type="number" id="productStock" placeholder="Stock inicial" value="0" required>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                    <button type="button" class="btn btn-secondary" onclick="hideAddProductForm()">Cancelar</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Tabla de productos -->
+        <div class="table-container">
+            <h2>📦 Productos en Inventario</h2>
+            <table id="productsTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>SKU</th>
+                        <th>Producto</th>
+                        <th>Categoría</th>
+                        <th>Precio</th>
+                        <th>Stock</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="productsBody">
+                    <tr>
+                        <td colspan="7" class="loading">Cargando productos...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Modal para actualizar stock -->
+        <div id="stockModal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <h3>Actualizar Stock</h3>
+                <p id="stockProductName"></p>
+                <input type="hidden" id="stockProductId">
+                
+                <select id="movementType" required>
+                    <option value="IN">➕ Entrada (Compra)</option>
+                    <option value="OUT">➖ Salida (Venta)</option>
+                </select>
+                
+                <input type="number" id="stockQuantity" placeholder="Cantidad" min="1" required>
+                <textarea id="stockNotes" placeholder="Notas (opcional)" rows="2"></textarea>
+                
+                <div class="form-actions">
+                    <button class="btn btn-primary" onclick="updateStock()">Actualizar</button>
+                    <button class="btn btn-secondary" onclick="closeStockModal()">Cancelar</button>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>Desarrollado por Kevin Vasquez Bautista | UTEPSA 2024</p>
+            <p>Laboratorio de Computación Paralela y Distribuida</p>
+        </footer>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
